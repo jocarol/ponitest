@@ -54,18 +54,15 @@ const solve = (L, C, N, queue) => {
   console.time('for')
   for (let i = 0; i < C; i++) {
     let seats = 0;
-    console.log('ride', i);
-    for (let j = 0; j < N; j++) {
-      console.log(`Queue : ${queue}`);
-      console.log('current group size', queue[j])
-
-      if (queue[0] + seats <= L) {
-        console.log(`group ${j} of ${queue[0]} people gets on the ride n°${i}`);
-        sum += queue[0];
-        seats += queue[0];
-        console.log(`${L - seats} / ${L} seats remaining`)
-        queue.push(queue.shift())
-      }
+    // console.log('ride', i);
+    for (let j = 0; j < N && queue[0] + seats <= L; j++) {
+      // console.log(`Queue : ${queue}`);
+      // console.log('current group size', queue[j])
+      // console.log(`group ${j} of ${queue[0]} people gets on the ride n°${i}`);
+      sum += queue[0];
+      seats += queue[0];
+      // console.log(`${L - seats} / ${L} seats remaining`)
+      queue.push(queue.shift())
     }
   }
   console.timeEnd('for')
