@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 });
 
 let counter = 0;
-let queue = [];
+let groups = [];
 let L, C, N = 0;
 
 rl.on('line', (line) => {
@@ -27,12 +27,11 @@ rl.on('line', (line) => {
     } else {
       // Check if we should keep listening for new line
       if (counter <= N) {
-        queue.push(parseInt(line));
+        groups.push(parseInt(line));
         counter++;
       }
       // If not, we can close the readline interface
       if (counter - 1 === N) {
-        // console.log(groups)
         rl.close();
       }
     }
@@ -41,30 +40,30 @@ rl.on('line', (line) => {
 
 rl.on('close', () => {
   // When the readline interface is closed, we can solve the problem
-  // console.log(queue);
-  solve(L, C, N, queue);
+  solve(L, C, N, groups);
 });
 
-const solve = (L, C, N, queue) => {
-  // console.log(`L: ${L}, C: ${C}, N: ${N}`);
+const solve = (L, C, N) => {
   let sum = 0;
-  let total = 0;
-  //let seats = L;
+  // We are using 'queueIndex' to keep track of the index of the group
+  // we are currently working on
+  let queueIndex = 0;
+  let riders = 0;
 
   console.time('for')
+    // We iterate over the number of rides
   for (let i = 0; i < C; i++) {
     let seats = 0;
-    // console.log('ride', i);
-    for (let j = 0; j < N && queue[0] + seats <= L; j++) {
-      // console.log(`Queue : ${queue}`);
-      // console.log('current group size', queue[j])
-      // console.log(`group ${j} of ${queue[0]} people gets on the ride n°${i}`);
-      sum += queue[0];
-      seats += queue[0];
-      // console.log(`${L - seats} / ${L} seats remaining`)
-      queue.push(queue.shift())
+
+    // We iterate over the number of groups.
+    for (let j = 0; j < N && seats + groups[queueIndex] <= L; j++) {
+      seats += groups[queueIndex];
+      queueIndex++;
+      // When we reach the end of the queue, we start from the beginning by
+      // reseting 'queueIndex' to 0
+      if (queueIndex >= N) queueIndex = 0;
     }
+    riders += seats;
   }
-  console.timeEnd('for')
-  console.log('sum', sum);
+  console.log(riders);
 }
